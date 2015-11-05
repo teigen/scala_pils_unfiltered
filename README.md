@@ -120,7 +120,7 @@ def intent = fix{
 
 ## Directives 2 - Hva med Async ?
 
-```
+```scala
 type Intent = PartialFunction[Request, Future[Response]]
 ```
 
