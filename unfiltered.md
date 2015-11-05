@@ -90,7 +90,7 @@ def fix(f:PartialFunction[Request, Request => Either[Response, Response]):Itent 
 ---
 
 ```scala
-case class Directive[A](run:Request => Either[A, Response]){
+case class Directive[A](run:Request => Either[Response, A]){
   def map[B](f:A => B):Directive[B] =
     Directive(r => run(r).map(f))
 
@@ -102,7 +102,8 @@ case class Directive[A](run:Request => Either[A, Response]){
 ---
 
 ```scala
-val POST = Directive(r => if(r.method == "POST") Right(()) else Left(MethodNotAllowed))
+val POST = Directive(r =>
+  if(r.method == "POST") Right(()) else Left(MethodNotAllowed))
 val request = Directive(r => Right(r))
 val bytes = request.map(r => Body.bytes(r))
 
@@ -145,7 +146,7 @@ PartialFunction[Request, Request => F[Either[Response, Response]]]
 import scalaz._
 import syntax.monad._
 
-case class Directive[F[_], A](run:Request => F[Either[A, Response]]){
+case class Directive[F[_], A](run:Request => F[Either[Response, A]]){
   def map[B](f:A => B)(implicit F:Functor[F]):Directive[F, B] =
     Directive[F, B](r => run(r).map(_.map(f)))
 
