@@ -1,4 +1,4 @@
-```
+```scala
 type Intent[-A, -B] =
   PartialFunction[HttpRequest[A], ResponseFunction[B]]
 
